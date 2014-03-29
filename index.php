@@ -1,10 +1,9 @@
-<?php 
-  $tervehdys = "Moi maailma!"; 
-?><!DOCTYPE HTML>
-<html>
-<head><title><?php echo $tervehdys; ?></title></head>
-<body>
-  <h1><?php echo $tervehdys; ?></h1>
-</body>
-</html>
+<?php
+  require_once 'libs/common.php';
+  require_once 'libs/models/poll.php';
+  require_once "libs/tietokantayhteys.php";  
+  
+  $polls = Poll::getAllActivePolls();
+  $expiredpolls = Poll::getAllExpiredPolls();
+  naytaNakyma('index.php', array('polls' => $polls));
 

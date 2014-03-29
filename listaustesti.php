@@ -1,6 +1,6 @@
 <?php
 //require_once sisällyttää annetun tiedoston vain kerran
-require_once "libs/user.php";
+require_once "libs/models/user.php";
 require_once "libs/tietokantayhteys.php";
 
 //Lista asioista array-tietotyyppiin laitettuna:
@@ -14,7 +14,7 @@ $lista = User::etsiKaikkiKayttajat();
         <h1>Users</h1>
         <ul>
             <?php foreach($lista as $asia): ?>
-            <li><?php echo $asia->getName(); ?></li>
+            <li><?php echo $asia->getUsername(); ?></li>
             <?php endforeach; ?>
         </ul>
     </body>
