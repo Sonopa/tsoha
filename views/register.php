@@ -6,10 +6,10 @@
     <?php endif; ?>
         
     <form action="doRegistration.php" method="POST">
-        Username: <input type="text" name="username" value="<?php echo $data->user; ?>"><br>
-        Password: <input type="password" name="password"><br>
-        Password confirmation: <input type="password" name="passwordconf"><br>
-        <input type="submit" value="Rekisteröidy">
+        Username: <input type="text" name="username" class="form-control" value="<?php echo $data->user; ?>"><br>
+        Password: <input type="password" name="password" class="form-control"><br>
+        Password confirmation: <input type="password" name="passwordconf" class="form-control"><br>
+        <input type="submit" value="Rekisteröidy" class="btn btn-primary">
     </form>
 </div>
 
