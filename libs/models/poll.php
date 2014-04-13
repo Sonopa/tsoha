@@ -99,13 +99,38 @@ class Poll {
     public function getOptions() {
         $sql = "SELECT option_id, option_name, vote_count, poll_id FROM voteoptions WHERE poll_id = ?";
         $kysely = getTietokantayhteys()->prepare($sql); 
-        $kysely->execute(array($this->poll_id));             
+        $kysely->execute(array($this->poll_id));
         
         foreach($kysely->fetchAll(PDO::FETCH_OBJ) as $tulos) {            
           $option = new Option($tulos->option_id, $tulos->option_name, $tulos->vote_count, $tulos->poll_id);
           $tulokset[] = $option;
         }
         return $tulokset;
+    }
+    
+    public static function getResults($poll_id) {        
+        $sql = "SELECT option_id, option_name, vote_count, poll_id FROM voteoptions WHERE poll_id = ? AND vote_count = (SELECT max(vote_count) FROM voteoptions WHERE poll_id = ?)";
+        $kysely = getTietokantayhteys()->prepare($sql); 
+        $kysely->execute(array($poll_id, $poll_id));
+        
+        foreach($kysely->fetchAll(PDO::FETCH_OBJ) as $tulos) {            
+          $option = new Option($tulos->option_id, $tulos->option_name, $tulos->vote_count, $tulos->poll_id);
+          $tulokset[] = $option;
+        }
+        return $tulokset;        
+    }
+    
+    public static function isActive($poll_id) {
+        $sql = "SELECT topic FROM polls WHERE poll_id = ? AND current_date < end_date";
+        $kysely = getTietokantayhteys()->prepare($sql); 
+        $kysely->execute(array($poll_id));
+        
+        $tulos = $kysely->fetchObject();
+        if ($tulos == null) {
+            return false;
+        }else {
+            return true;
+        }
     }
     
     public function getId() {
@@ -122,7 +147,7 @@ class Poll {
         $this->topic = $topic;
         if (strlen($topic) < 3) {
             $this->errors['topic'] = "Topics length must be more than 2 characters";
-        } else { 
+        }else { 
             unset($this->errors['topic']);
         }
     }
@@ -135,7 +160,7 @@ class Poll {
     }
     
     public function getDescription() {
-        return $this->description;        
+        return $this->description;
     }
     public function setDescription($description) {
         $this->description = $description;        
@@ -152,6 +177,18 @@ class Poll {
         return $this->end_date;        
     }
     public function setEndDate($date) {
+        $date_format = DateTime::createFromFormat('Y-m-d', $date);
+        $d = explode('-', $date);
+        if (!$date_format) {
+            $this->errors['end_date'] = "Date must be given in the right format";
+        }else if ($date_format < date_create(date('Y-m-d'))) { 
+            $this->errors['end_date'] = "Date must be equal to or greater than the start date";
+        }else if (!checkdate($d[1], $d[2], $d[0])) {
+            $this->errors['end_date'] = "Date is not correct";
+        }
+        else {
+            unset($this->errors['end_date']);
+        }
         $this->end_date = $date;
     }
     

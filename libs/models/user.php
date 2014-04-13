@@ -64,6 +64,23 @@ class User {
         return $user;
       }
     }
+    public static function getUserByUsername($username) {
+      $sql = "SELECT user_id, username, password FROM users WHERE username = ? LIMIT 1";
+      $kysely = getTietokantayhteys()->prepare($sql);
+      $kysely->execute(array($username));
+
+      $result = $kysely->fetchObject();
+      if ($result == null) {
+        return null;
+      } else {
+        $user = new User(); 
+        $user->setId($result->user_id);
+        $user->setUsername($result->username);
+        $user->setPassword($result->password);
+
+        return $user;
+      }
+    }
     
     public function addIntoDatabase() {
         $sql = "INSERT INTO users(username, password) VALUES(?,?) RETURNING user_id";
@@ -82,10 +99,16 @@ class User {
         $kysely->execute(array($this->getPassword(), $this->getId()));
     }
     
+    public function delete() {
+        $sql = "DELETE FROM users WHERE user_id = ?";
+        $kysely = getTietokantayhteys()->prepare($sql);
+        $kysely->execute(array($this->getId()));
+    }
+    
     public function isValid() {
         return empty($this->errors);
     }
-    
+
     public function getErrors() {
         return $this->errors;
     }
@@ -100,6 +123,16 @@ class User {
         $this->user_id = $id;
     }
 
+    public function setUsernameForRegistration($username) {
+        $user = User::getUserByUsername($username);
+        if(!$user == null) {
+            $this->errors['username'] = "Username is already in use";
+        }else {
+            unset($this->errors['username']);
+        }
+        $this->username = $username;
+    }
+    
     public function setUsername($username) {
         $this->username = $username;
     }

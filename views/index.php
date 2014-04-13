@@ -12,10 +12,10 @@
         <tbody>                            
             <?php foreach($data->polls as $poll): ?>  
                 <tr>
-                    <td><a href="poll.php?id=<?php echo $poll->getId(); ?>"><?php echo $poll->getTopic(); ?></a></td>
-                    <td><?php echo $poll->getDescription(); ?></td>
-                    <td><?php echo $poll->getStartDate(); ?></td>
-                    <td><?php echo $poll->getEndDate(); ?></td>                
+                    <td><a href="poll.php?id=<?php echo $poll->getId(); ?>"><?php echo htmlspecialchars($poll->getTopic()); ?></a></td>
+                    <td><?php echo htmlspecialchars($poll->getDescription()); ?></td>
+                    <td><?php echo htmlspecialchars($poll->getStartDate()); ?></td>
+                    <td><?php echo htmlspecialchars($poll->getEndDate()); ?></td>                
                 </tr>
             <?php endforeach; ?>
         </tbody>
@@ -31,14 +31,15 @@
                 <th>Tulos</th>
             </tr>
         </thead>
-        <tbody>
-            <?php foreach($data->expiredpolls as $poll): ?>  
+        <tbody>            
+            <?php foreach($data->expiredpolls as $poll): ?>
+            <?php $winners = Poll::getResults($poll->getId()); ?>
                 <tr>
-                    <td><a href="poll.php?id=<?php echo $poll->getId(); ?>"><?php echo $poll->getTopic(); ?></a></td>
-                    <td><?php echo $poll->getDescription(); ?></td>
-                    <td><?php echo $poll->getStartDate(); ?></td>
-                    <td><?php echo $poll->getEndDate(); ?></td> 
-                    <td></td> 
+                    <td><a href="poll.php?id=<?php echo $poll->getId(); ?>"><?php echo htmlspecialchars($poll->getTopic()); ?></a></td>
+                    <td><?php echo htmlspecialchars($poll->getDescription()); ?></td>
+                    <td><?php echo htmlspecialchars($poll->getStartDate()); ?></td>
+                    <td><?php echo htmlspecialchars($poll->getEndDate()); ?></td>                 
+                    <td><?php foreach ($winners as $winner) {echo $winner->getOptionName() . ' ';} ?></td> 
                 </tr>
             <?php endforeach; ?>
         </tbody>

@@ -6,6 +6,13 @@ class vote {
     private $poll_id;
     private $user_id;
     
+    public function __construct($vote_id, $cast_date, $poll_id, $user_id) {
+        $this->vote_id = $vote_id;
+        $this->cast_date = $cast_date;
+        $this->poll_id = $poll_id;
+        $this->user_id = $user_id;
+    }
+    
     public function addIntoDatabase($option_id) {
         $sql = "INSERT INTO votes(cast_date, poll_id, user_id) VALUES(current_date,?,?) RETURNING vote_id";
         $kysely = getTietokantayhteys()->prepare($sql);
@@ -22,6 +29,41 @@ class vote {
         return $ok;
     }
     
+    public static function getVotes($poll_id) {
+        $sql = "SELECT vote_id, cast_date, poll_id, user_id FROM votes WHERE poll_id = ?";
+        $kysely = getTietokantayhteys()->prepare($sql);
+        $kysely->execute(array($poll_id));
+        
+        foreach($kysely->fetchAll(PDO::FETCH_OBJ) as $tulos) {
+          $vote = new Vote($tulos->vote_id, $tulos->cast_date, $tulos->poll_id, $tulos->user_id);
+
+          $tulokset[] = $vote;
+        }
+        return $tulokset;
+    }
+    
+    public static function getVoteDates($poll_id) {
+        $sql = "SELECT DISTINCT cast_date FROM votes WHERE poll_id = ? ORDER BY cast_date";
+        $kysely = getTietokantayhteys()->prepare($sql);
+        $kysely->execute(array($poll_id));
+        
+        foreach($kysely->fetchAll(PDO::FETCH_OBJ) as $tulos) {
+          $tulokset[] = $tulos->cast_date;
+        }
+        return $tulokset;
+    }
+    
+    public static function getVoteCountByDate($cast_date, $poll_id) {
+        $sql = "SELECT COUNT(*) FROM votes WHERE poll_id = ? AND cast_date = ?";
+        $kysely = getTietokantayhteys()->prepare($sql);
+        $kysely->execute(array($poll_id, $cast_date));
+        
+        $tulos = $kysely->fetchObject();
+        return $tulos->count;
+    }
+    
+    
+
     public function isValid() {        
         $sql = "SELECT user_id FROM votes WHERE user_id = ? AND poll_id = ?";
         $kysely = getTietokantayhteys()->prepare($sql);

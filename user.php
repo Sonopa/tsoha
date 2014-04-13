@@ -6,8 +6,14 @@ require_once 'libs/tietokantayhteys.php';
 $id = (int)$_GET['id'];
 $user = User::getUserById($id);
 
-if ($user != null) {
-    naytaNakyma('user.php', array('user' => $user));
+if ($user->getId() == $_SESSION['user_id']) {
+    if ($user != null) {
+        naytaNakyma('user.php', array('user' => $user));
+    }else {
+        naytaNakyma('user.php', array('user' => null, 'error' => 'User was not found'));
+    }
 }else {
-    naytaNakyma('user.php', array('user' => null, 'error' => 'User was not found'));
+    header('Location: index.php');
 }
+
+
