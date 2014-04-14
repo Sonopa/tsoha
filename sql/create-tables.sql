@@ -21,7 +21,7 @@ CREATE TABLE votes
 vote_id SERIAL PRIMARY KEY,
 cast_date date NOT NULL,
 poll_id int REFERENCES polls ON DELETE CASCADE,
-user_id int REFERENCES users ON DELETE CASCADE
+user_id int REFERENCES users
 );
 
 CREATE TABLE voteoptions

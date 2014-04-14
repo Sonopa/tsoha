@@ -1,5 +1,5 @@
 <?php
-//require_once sisällyttää annetun tiedoston vain kerran
+
 require_once "libs/models/user.php";
 require_once "libs/tietokantayhteys.php";
 

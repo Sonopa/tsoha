@@ -5,6 +5,6 @@
   require_once 'libs/tietokantayhteys.php';  
   
   $polls = Poll::getAllActivePolls();
-  $expiredpolls = Poll::getAllExpiredPolls();
+  $expiredpolls = Poll::getAllExpiredPolls(); //päättyneet äänestykset
   naytaNakyma('index.php', array('polls' => $polls, 'expiredpolls' => $expiredpolls));
 

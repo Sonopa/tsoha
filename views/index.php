@@ -33,7 +33,7 @@
         </thead>
         <tbody>            
             <?php foreach($data->expiredpolls as $poll): ?>
-            <?php $winners = Poll::getResults($poll->getId()); ?>
+            <?php $winners = Poll::getResults($poll->getId()); ?> <!-- hakee äänestyksessä eniten ääniä saaneet -->
                 <tr>
                     <td><a href="poll.php?id=<?php echo $poll->getId(); ?>"><?php echo htmlspecialchars($poll->getTopic()); ?></a></td>
                     <td><?php echo htmlspecialchars($poll->getDescription()); ?></td>

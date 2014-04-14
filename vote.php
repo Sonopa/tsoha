@@ -9,7 +9,7 @@ if (isLoggedIn()) {
     $vote->setPollId($_POST['poll_id']);
     $vote->setUserId($_SESSION['user_id']);
     $r = $_POST['poll_id'];
-    if ($vote->isValid()) {
+    if ($vote->isValid()) { //tarkistaa onko ääni jo annettu
         $vote->addIntoDatabase($_POST['vote']);
         $_SESSION['message'] = "Vote succesfully registered";    
         header("Location: poll.php?id=$r");

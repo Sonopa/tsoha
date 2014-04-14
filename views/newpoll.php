@@ -15,6 +15,7 @@
     </form>
 </div>
 
+<!-- javascript, joka lisää vaihtoehto kenttiä annetun määrän -->
 <script>
     function addFields(){
         var number = document.getElementById("members").value;

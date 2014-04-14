@@ -42,6 +42,7 @@ class vote {
         return $tulokset;
     }
     
+    /* hakee kaikki päivämäärät joina ääniä on annettu tietylle äänestykselle */
     public static function getVoteDates($poll_id) {
         $sql = "SELECT DISTINCT cast_date FROM votes WHERE poll_id = ? ORDER BY cast_date";
         $kysely = getTietokantayhteys()->prepare($sql);
@@ -52,7 +53,7 @@ class vote {
         }
         return $tulokset;
     }
-    
+    /* laskee tiettynä päivänä tietyn äänestyksen saamat äänet */
     public static function getVoteCountByDate($cast_date, $poll_id) {
         $sql = "SELECT COUNT(*) FROM votes WHERE poll_id = ? AND cast_date = ?";
         $kysely = getTietokantayhteys()->prepare($sql);
@@ -60,10 +61,9 @@ class vote {
         
         $tulos = $kysely->fetchObject();
         return $tulos->count;
-    }
-    
-    
+    }   
 
+    /* tarkistaa onko samanlainen ääni jo olemassa */
     public function isValid() {        
         $sql = "SELECT user_id FROM votes WHERE user_id = ? AND poll_id = ?";
         $kysely = getTietokantayhteys()->prepare($sql);

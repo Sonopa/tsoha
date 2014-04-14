@@ -13,15 +13,14 @@
         <?php endif; ?>
     </p>
     
-    <?php $results = Option::getOptions($poll->getId()); ?>
-    <?php $total = Poll::getVoteCount($poll->getId()); ?>
-    <?php $winners = Poll::getResults($poll->getId()); ?>
-    <h4>Tulos: <?php foreach ($winners as $winner) {echo $winner->getOptionName() . ' ';} ?></h4>
+    
+    <h4>Tulos: <?php foreach ($data->winners as $winner) {echo $winner->getOptionName() . ' ';} ?></h4>
     <div class="well well-large">
-        <?php foreach ($results as $result): ?>
+        <?php foreach ($data->results as $result): ?> <!-- results sisältää kaikki äänestyksen vaihtoehdot -->
             <div class="progress">
-                <?php $percent = round(($result->getVoteCount()/$total)*100, 2);
-                        $name = $result->getOptionName(); ?>
+                <!-- lasketaan prosenttiosuus saaduista äänistä -->
+                <?php $percent = round(($result->getVoteCount()/$data->total)*100, 2);
+                        $name = $result->getOptionName(); ?> 
                 <div class="progress-bar" style="width: <?php echo $percent*10 ?>;%"><p><font color="black"><?php echo "$name: $percent%" ?></font></p></div>
             </div>
         <?php endforeach; ?>

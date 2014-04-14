@@ -18,6 +18,7 @@ class Poll {
         $this->user_id = $user_id;
     }
     
+    /* palauttaa kaikki käynnissä olevat äänestykset */
     public static function getAllActivePolls() {
         $sql = "SELECT poll_id, topic, description, start_date, end_date, user_id FROM polls WHERE current_date <= end_date";
         $kysely = getTietokantayhteys()->prepare($sql); $kysely->execute();
@@ -29,7 +30,8 @@ class Poll {
           $tulokset[] = $poll;
         }
         return $tulokset;
-    }
+    }    
+    /* palauttaa päättyneet äänestykset */
     public static function getAllExpiredPolls() {
         $sql = "SELECT poll_id, topic, description, start_date, end_date, user_id FROM polls WHERE current_date > end_date";
         $kysely = getTietokantayhteys()->prepare($sql); $kysely->execute();
@@ -42,6 +44,7 @@ class Poll {
         }
         return $tulokset;
     }
+    /* palauttaa kaikki käyttäjän luomat äänestykset */
     public static function getAllUsersPolls($user_id) {
         $sql = "SELECT poll_id, topic, description, start_date, end_date, user_id FROM polls WHERE user_id = ?";
         $kysely = getTietokantayhteys()->prepare($sql); $kysely->execute(array($user_id));
@@ -96,6 +99,7 @@ class Poll {
         return $tulos->count;
     }
     
+    /* palauttaa äänestykset vaihtoehdot, tämä on myös option luokassa joten pitää tarkistaa käyttö ja poistaa */
     public function getOptions() {
         $sql = "SELECT option_id, option_name, vote_count, poll_id FROM voteoptions WHERE poll_id = ?";
         $kysely = getTietokantayhteys()->prepare($sql); 
@@ -108,6 +112,7 @@ class Poll {
         return $tulokset;
     }
     
+    /* palauttaa äänestyksen eniten ääniä saaneet vaihtoehdot */
     public static function getResults($poll_id) {        
         $sql = "SELECT option_id, option_name, vote_count, poll_id FROM voteoptions WHERE poll_id = ? AND vote_count = (SELECT max(vote_count) FROM voteoptions WHERE poll_id = ?)";
         $kysely = getTietokantayhteys()->prepare($sql); 
@@ -119,7 +124,7 @@ class Poll {
         }
         return $tulokset;        
     }
-    
+    /* onko äänestys käynnissä */
     public static function isActive($poll_id) {
         $sql = "SELECT topic FROM polls WHERE poll_id = ? AND current_date < end_date";
         $kysely = getTietokantayhteys()->prepare($sql); 
@@ -145,9 +150,9 @@ class Poll {
     }
     public function setTopic($topic) {
         $this->topic = $topic;
-        if (strlen($topic) < 3) {
-            $this->errors['topic'] = "Topics length must be more than 2 characters";
-        }else { 
+        if (strlen($topic) < 3 or strlen($topic) > 50) {
+            $this->errors['topic'] = "Topics length must be between 3 and 50 characters";
+        }else{ 
             unset($this->errors['topic']);
         }
     }
@@ -163,6 +168,11 @@ class Poll {
         return $this->description;
     }
     public function setDescription($description) {
+        if (strlen($description) > 255) {
+            $this->errors['description'] = "Description can't be more than 255 characters long";
+        }else{ 
+            unset($this->errors['description']);
+        }
         $this->description = $description;        
     }
     
@@ -179,6 +189,7 @@ class Poll {
     public function setEndDate($date) {
         $date_format = DateTime::createFromFormat('Y-m-d', $date);
         $d = explode('-', $date);
+        /* tarkistetaan onko annettu aloituspäivämäärää suurempi oikea päivämäärä oikeassa muodossa */
         if (!$date_format) {
             $this->errors['end_date'] = "Date must be given in the right format";
         }else if ($date_format < date_create(date('Y-m-d'))) { 

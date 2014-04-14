@@ -39,9 +39,7 @@ class User {
         $user = new User();
         $user->setId($tulos->user_id);
         $user->setPassword($tulos->password);
-        $user->setUsername($tulos->username);
-        //$array[] = $muuttuja; lisää muuttujan arrayn perään. 
-        //Se vastaa melko suoraan ArrayList:in add-metodia.
+        $user->setUsername($tulos->username);        
         $tulokset[] = $user;
       }
       return $tulokset;
@@ -123,6 +121,7 @@ class User {
         $this->user_id = $id;
     }
 
+    /* set username rekisteröintiä varten. Tarkistaa onko käyttäjänimi käytössä */
     public function setUsernameForRegistration($username) {
         $user = User::getUserByUsername($username);
         if(!$user == null) {

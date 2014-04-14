@@ -48,8 +48,8 @@ class option {
     }
     public function setOptionName($name) {
         $this->option_name = $name;
-        if (strlen($name) < 1) {
-            $this->errors['option_name'] = "Option name can't be empty";            
+        if (strlen($name) < 1 or strlen($name) > 50) {
+            $this->errors['option_name'] = "Option name must be between 1 and 50 characters";            
         } else { 
             unset($this->errors['option_name']);
         }

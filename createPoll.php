@@ -26,30 +26,17 @@ foreach ($_POST['options'] as $option) {
         $options[] = $new_option; 
     }       
 }
-//$new_option = new Option();
-//$new_option->setOptionName($_POST['option1']);
-//$new_option->setVoteCount(0);
-//
-//$new_option2 = new Option();
-//$new_option2->setOptionName($_POST['option2']); 
-//$new_option2->setVoteCount(0);
-//
-//$new_option3 = new Option();
-//$new_option3->setOptionName($_POST['option3']);
-//$new_option3->setVoteCount(0);
-//
-//$new_option4 = new Option();
-//$new_option4->setOptionName($_POST['option4']);
-//$new_option4->setVoteCount(0);
 
-//function enoughOptions() {    
-//    if (sizeof($_POST['options']) > 1) {
-//        return true;
-//    }else {
-//        return false;
-//    }
-//}
-if ($new_poll->isValid() and (sizeof($options) > 1) ) {
+/* tarkistetaan ovatko kaikki annetut vaihtoehdot oikein */
+$options_valid = true;
+foreach ($options as $option) {
+    if (!$option->isValid()) {        
+        $options_valid = false;
+    }
+}
+
+/* validoidaan äänestyksen tiedot, vaihtoehtojen määrä ja muoto */
+if ($new_poll->isValid() and (sizeof($options) > 1) and $options_valid ) {
     $new_poll->addIntoDatabase();
     foreach ($options as $option) {
         if ($option->isValid()) {
@@ -64,5 +51,9 @@ if ($new_poll->isValid() and (sizeof($options) > 1) ) {
     naytaNakyma('newpoll.php', array('poll'=> $new_poll, 'errors'=>$errors));    
 }else {
     $errors = $new_poll->getErrors();
+    foreach ($options as $option) {
+    if (!$option->isValid()) {
+        $errors += $option->getErrors(); 
+    }}
     naytaNakyma('newpoll.php', array('poll'=> $new_poll, 'errors'=>$errors));    
 }
