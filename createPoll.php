@@ -46,11 +46,12 @@ if ($new_poll->isValid() and (sizeof($options) > 1) and $options_valid ) {
     }   
     $_SESSION['message'] = "Poll created successfully";
     header('Location: index.php');
-}else if(sizeof($options) <= 1) {
-    $errors = array("You need to give at least 2 options");
-    naytaNakyma('newpoll.php', array('poll'=> $new_poll, 'errors'=>$errors));    
 }else {
-    $errors = $new_poll->getErrors();
+    $errors = array();
+    if (sizeof($options) <= 1) {
+        $errors += array("You need to give at least 2 options");
+    }
+    $errors += $new_poll->getErrors();
     foreach ($options as $option) {
     if (!$option->isValid()) {
         $errors += $option->getErrors(); 

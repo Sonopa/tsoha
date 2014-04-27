@@ -7,7 +7,7 @@ require_once 'libs/models/vote.php';
 
 $id = (int)$_GET['id'];
 $poll = Poll::findPoll($id);
-$results = Option::getOptions($poll->getId());
+$results = $poll->getOptions();
 $total = Poll::getVoteCount($poll->getId());
 $winners = Poll::getResults($poll->getId());
 

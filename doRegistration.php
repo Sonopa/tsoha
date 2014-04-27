@@ -15,6 +15,8 @@ if ($_POST['password'] == $_POST['passwordconf']) {
     } else {
         naytaNakyma('register.php', array('errors'=>$new_user->getErrors())); 
     }
+}else {
+    naytaNakyma('register.php', array('errors'=>array("Passwords did not match"))); 
 }
 
 
