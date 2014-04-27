@@ -12,18 +12,6 @@ class option {
         $this -> option_name = $option_name;
         $this -> vote_count = $vote_count;
         $this -> poll_id = $poll_id;                
-    }
-    
-    public static function getOptions($poll_id) {
-        $sql = "SELECT option_id, option_name, vote_count, poll_id FROM voteoptions WHERE poll_id = ?";
-        $kysely = getTietokantayhteys()->prepare($sql); 
-        $kysely->execute(array($poll_id));
-        
-        foreach($kysely->fetchAll(PDO::FETCH_OBJ) as $tulos) {            
-          $option = new Option($tulos->option_id, $tulos->option_name, $tulos->vote_count, $tulos->poll_id);
-          $tulokset[] = $option;
-        }
-        return $tulokset;
     }    
     
     public function addIntoDatabase() {

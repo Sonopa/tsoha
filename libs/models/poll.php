@@ -99,7 +99,7 @@ class Poll {
         return $tulos->count;
     }
     
-    /* palauttaa äänestykset vaihtoehdot, tämä on myös option luokassa joten pitää tarkistaa käyttö ja poistaa */
+    /* palauttaa äänestykset vaihtoehdot */
     public function getOptions() {
         $sql = "SELECT option_id, option_name, vote_count, poll_id FROM voteoptions WHERE poll_id = ?";
         $kysely = getTietokantayhteys()->prepare($sql); 
